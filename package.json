@@ -4,7 +4,9 @@
   "description": "for upload qiniuCloud and clear it",
   "main": "upload-qiniu.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "upload": "node upload-qiniu",
+    "clear": "node clear-qiniu"
   },
   "repository": {
     "type": "git",
