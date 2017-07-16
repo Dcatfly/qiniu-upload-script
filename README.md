@@ -49,6 +49,11 @@ node upload-qiniu <env>
 ```
 node upload-qiniu <env> debug
 ```
+若有提示上传失败，想重新上传失败的文件，请运行
+
+```
+node upload-qiniu <env> failed
+```
 若想删除七牛云空间中的已存储文件，请运行
 
 ```
