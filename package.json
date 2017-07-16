@@ -1,0 +1,30 @@
+{
+  "name": "qiniu-upload-script",
+  "version": "1.0.0",
+  "description": "for upload qiniuCloud and clear it",
+  "main": "upload-qiniu.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Dcatfly/qiniu-upload-script.git"
+  },
+  "keywords": [
+    "qiniu",
+    "upload",
+    "webpack",
+    "cdn"
+  ],
+  "author": "dcatfly",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Dcatfly/qiniu-upload-script/issues"
+  },
+  "homepage": "https://github.com/Dcatfly/qiniu-upload-script#readme",
+  "dependencies": {
+    "lodash": "^4.17.4",
+    "moment": "^2.18.1",
+    "qiniu": "^7.0.5"
+  }
+}
