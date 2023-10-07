@@ -16,14 +16,14 @@ let mac = new qiniu.auth.digest.Mac(qiniuConfig.accessKey, qiniuConfig.secretKey
 
 let argvArr = process.argv.slice(2)
 if (argvArr.length === 0) {
-    let env = Object.keys(qiniuConfig.envConfig).join(' or ');
+	let env = Object.keys(qiniuConfig.envConfig).join(' or ');
 	console.log(`请在命令后添加 ${env}`)
 	process.exit()
 }
 let bucket = qiniuConfig.envConfig[argvArr[0]].bucket;
 let cdn = qiniuConfig.envConfig[argvArr[0]].cdnHost;
 
-let {originPath, oldOriginPath, originFile, fileEncodeType = 'utf8', qndataFile = 'qndata.json', failedUploadLog = 'failedlog.json'} = qiniuConfig;
+let { originPath, oldOriginPath, originFile, fileEncodeType = 'utf8', qndataFile = 'qndata.json', failedUploadLog = 'failedlog.json' } = qiniuConfig;
 
 
 let fileCount = 0, compareFileCount = 0, uploadCount = 0;
@@ -111,7 +111,7 @@ let dealFailedFiles = () => {
 		qndataLog[item] = new moment().format('YYYY-MM-DD HH:mm:ss')
 	})
 	qndata = {}
-	needUpload = needUpload.map(it => originPath+'/'+it)
+	needUpload = needUpload.map(it => originPath + '/' + it)
 	uploadFilesByArr(needUpload)
 	refreshCDN(_difference(failObj.refreshArr, needUpload))
 }
@@ -160,9 +160,9 @@ let dealFileQN = () => {
 		// deleteKeys(qndataKeys)
 	} else {
 		console.log('there is not have extra file need to delete')
-		if(initFirst){
+		if (initFirst) {
 			writeQnlog()
-		}else{
+		} else {
 			refreshCDN(needUpload);
 		}
 	}
@@ -177,7 +177,7 @@ let writeQnlog = () => {
 			if (err) {
 				debugFlag && console.error(err)
 			} else {
-				console.log('失败日志已写入'+failedUploadLog+'，请运行 npm run upload2qiniu '+argvArr[0]+' failed 重新'+(allUploadIsSuccess ? '' : '上传') + (allRefreshIsSuccess ? '' : '刷新') )
+				console.log('失败日志已写入' + failedUploadLog + '，请运行 npm run upload2qiniu ' + argvArr[0] + ' failed 重新' + (allUploadIsSuccess ? '' : '上传') + (allRefreshIsSuccess ? '' : '刷新'))
 			}
 
 		});
@@ -214,7 +214,7 @@ let refreshCDN = (needRefreshArr) => {
 				// let jsonBody = JSON.parse(respBody);
 				// console.log(jsonBody);
 			}
-			if(index === needRefreshArr.length - 1){
+			if (index === needRefreshArr.length - 1) {
 				writeQnlog()
 			}
 		});
@@ -270,8 +270,9 @@ let uploadFilesByArr = (arr) => {
 		//要上传文件的本地路径
 		let filePath = path;
 		//上传到七牛后保存的文件名
-		let key = path.replace('dist/', '');
-
+		const localFilePathHeaderName = qiniuConfig.originPath
+		const qiniuFileStorePath = qiniuConfig.storePath
+		let key = path.replace(localFilePathHeaderName + '/', qiniuFileStorePath + '/');
 		//生成上传 Token
 		let token = uptoken(bucket, key);
 
@@ -286,10 +287,10 @@ let readFilesFormDir = (dir) => {
 		let ret;
 		if (stats.isDirectory()) {
 			ret = !/[/]php$/.test(dir) && readdirPromise(dir).then((files) => {
-					return Promise.all(files.map(file => readFilesFormDir(dir + '/' + file)))
-				}).then((paths) => {
-					return [].concat(...paths)
-				})
+				return Promise.all(files.map(file => readFilesFormDir(dir + '/' + file)))
+			}).then((paths) => {
+				return [].concat(...paths)
+			})
 			ret = ret || []
 		} else if (stats.isFile()) {
 			ret = dir
@@ -298,7 +299,7 @@ let readFilesFormDir = (dir) => {
 	})
 }
 
-if(argvArr.length === 1 || (argvArr.length === 2 && argvArr[1] === 'debug')){
+if (argvArr.length === 1 || (argvArr.length === 2 && argvArr[1] === 'debug')) {
 	argvArr.length === 2 && argvArr[1] === 'debug' && (debugFlag = true)
 	readFilesFormDir(originPath).then((paths) => {
 		fileCount = paths.length;
@@ -313,7 +314,7 @@ if(argvArr.length === 1 || (argvArr.length === 2 && argvArr[1] === 'debug')){
 		})
 
 	})
-//改变index.html中的文件引用
+	//改变index.html中的文件引用
 	fs.readFile(originPath + '/' + originFile, fileEncodeType, (err, data) => {
 		if (err) throw err;
 		data = data.replace(/((href=['"])|(src=['"]))(?!http:)(?!https:)[/]?([^/])/g, '$1' + cdn + '$4');
@@ -323,9 +324,9 @@ if(argvArr.length === 1 || (argvArr.length === 2 && argvArr[1] === 'debug')){
 			console.log('index.html is change success');
 		});
 	});
-}else if(argvArr[1] === 'failed'){
+} else if (argvArr[1] === 'failed') {
 	debugFlag = true
 	dealFailedFiles()
-}else{
+} else {
 	console.log('命令行参数不合法')
 }
